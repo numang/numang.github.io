@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Product Listing</title>
+  <title>Product Filter</title>
   <style>
     body {
       margin: 0;
@@ -16,6 +16,8 @@
       background-color: #f4f4f4;
       height: 100vh;
       box-sizing: border-box;
+      position: sticky;
+      top: 0;
     }
 
     .sidebar h3 {
@@ -29,7 +31,7 @@
 
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 20px;
     }
 
@@ -66,52 +68,107 @@
 
     <div class="filter-group">
       <label>Price Range</label>
-      <input type="radio" name="price" id="price1">
+      <input type="radio" name="price" value="0-50" id="price1">
       <label for="price1">$0 - $50</label><br>
-      <input type="radio" name="price" id="price2">
+      <input type="radio" name="price" value="51-100" id="price2">
       <label for="price2">$51 - $100</label><br>
-      <input type="radio" name="price" id="price3">
-      <label for="price3">$101 - $200</label>
+      <input type="radio" name="price" value="101-200" id="price3">
+      <label for="price3">$101 - $200</label><br>
+      <input type="radio" name="price" value="all" id="priceAll" checked>
+      <label for="priceAll">All</label>
     </div>
 
     <div class="filter-group">
       <label>Category</label>
-      <input type="checkbox" id="cat1">
+      <input type="checkbox" value="Electronics" id="cat1">
       <label for="cat1">Electronics</label><br>
-      <input type="checkbox" id="cat2">
+      <input type="checkbox" value="Clothing" id="cat2">
       <label for="cat2">Clothing</label><br>
-      <input type="checkbox" id="cat3">
-      <label for="cat3">Home & Kitchen</label>
+      <input type="checkbox" value="Home" id="cat3">
+      <label for="cat3">Home</label>
     </div>
 
     <div class="filter-group">
       <label>Availability</label>
-      <input type="checkbox" id="in-stock">
-      <label for="in-stock">In Stock Only</label>
+      <input type="checkbox" id="inStockOnly">
+      <label for="inStockOnly">In Stock Only</label>
     </div>
   </div>
 
   <div class="content">
     <h2>Products</h2>
-    <div class="product-grid">
-      <div class="product-card">
-        <h4>Product 1</h4>
-        <p>$49.99</p>
-        <p>In Stock</p>
-      </div>
-      <div class="product-card">
-        <h4>Product 2</h4>
-        <p>$89.99</p>
-        <p>Out of Stock</p>
-      </div>
-      <div class="product-card">
-        <h4>Product 3</h4>
-        <p>$120.00</p>
-        <p>In Stock</p>
-      </div>
-      <!-- Add more products as needed -->
+    <div class="product-grid" id="productGrid">
+      <!-- Products will be dynamically inserted here -->
     </div>
   </div>
+
+  <script>
+    const products = [
+      { name: 'Wireless Mouse', price: 25, category: 'Electronics', inStock: true },
+      { name: 'Bluetooth Speaker', price: 70, category: 'Electronics', inStock: false },
+      { name: 'T-Shirt', price: 30, category: 'Clothing', inStock: true },
+      { name: 'Jeans', price: 60, category: 'Clothing', inStock: true },
+      { name: 'Air Fryer', price: 120, category: 'Home', inStock: true },
+      { name: 'Coffee Maker', price: 95, category: 'Home', inStock: false },
+      { name: 'Headphones', price: 200, category: 'Electronics', inStock: true },
+    ];
+
+    const productGrid = document.getElementById('productGrid');
+    const checkboxes = document.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+
+    function renderProducts(filteredProducts) {
+      productGrid.innerHTML = '';
+      if (filteredProducts.length === 0) {
+        productGrid.innerHTML = '<p>No products found.</p>';
+        return;
+      }
+      filteredProducts.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <h4>${p.name}</h4>
+          <p>Price: $${p.price}</p>
+          <p>Category: ${p.category}</p>
+          <p>${p.inStock ? 'In Stock' : 'Out of Stock'}</p>
+        `;
+        productGrid.appendChild(card);
+      });
+    }
+
+    function filterProducts() {
+      const selectedPrice = document.querySelector('input[name="price"]:checked')?.value;
+      const selectedCategories = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+      const inStockOnly = document.getElementById('inStockOnly').checked;
+
+      let filtered = products.filter(p => {
+        // Price filter
+        if (selectedPrice && selectedPrice !== 'all') {
+          const [min, max] = selectedPrice.split('-').map(Number);
+          if (p.price < min || p.price > max) return false;
+        }
+
+        // Category filter
+        if (selectedCategories.length > 0 && !selectedCategories.includes(p.category)) {
+          return false;
+        }
+
+        // In stock filter
+        if (inStockOnly && !p.inStock) {
+          return false;
+        }
+
+        return true;
+      });
+
+      renderProducts(filtered);
+    }
+
+    checkboxes.forEach(cb => cb.addEventListener('change', filterProducts));
+
+    // Initial render
+    renderProducts(products);
+  </script>
 
 </body>
 </html>
