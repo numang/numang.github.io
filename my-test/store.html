@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Listing</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 250px;
+      padding: 20px;
+      background-color: #f4f4f4;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+
+    .sidebar h3 {
+      margin-top: 0;
+    }
+
+    .content {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: #fff;
+    }
+
+    .product-card h4 {
+      margin: 10px 0 5px;
+    }
+
+    .filter-group {
+      margin-bottom: 20px;
+    }
+
+    .filter-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h3>Filters</h3>
+
+    <div class="filter-group">
+      <label>Price Range</label>
+      <input type="radio" name="price" id="price1">
+      <label for="price1">$0 - $50</label><br>
+      <input type="radio" name="price" id="price2">
+      <label for="price2">$51 - $100</label><br>
+      <input type="radio" name="price" id="price3">
+      <label for="price3">$101 - $200</label>
+    </div>
+
+    <div class="filter-group">
+      <label>Category</label>
+      <input type="checkbox" id="cat1">
+      <label for="cat1">Electronics</label><br>
+      <input type="checkbox" id="cat2">
+      <label for="cat2">Clothing</label><br>
+      <input type="checkbox" id="cat3">
+      <label for="cat3">Home & Kitchen</label>
+    </div>
+
+    <div class="filter-group">
+      <label>Availability</label>
+      <input type="checkbox" id="in-stock">
+      <label for="in-stock">In Stock Only</label>
+    </div>
+  </div>
+
+  <div class="content">
+    <h2>Products</h2>
+    <div class="product-grid">
+      <div class="product-card">
+        <h4>Product 1</h4>
+        <p>$49.99</p>
+        <p>In Stock</p>
+      </div>
+      <div class="product-card">
+        <h4>Product 2</h4>
+        <p>$89.99</p>
+        <p>Out of Stock</p>
+      </div>
+      <div class="product-card">
+        <h4>Product 3</h4>
+        <p>$120.00</p>
+        <p>In Stock</p>
+      </div>
+      <!-- Add more products as needed -->
+    </div>
+  </div>
+
+</body>
+</html>
