@@ -1,107 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Product Filter</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      display: flex;
-    }
-
-    .sidebar {
-      width: 250px;
-      padding: 20px;
-      background-color: #f4f4f4;
-      height: 100vh;
-      box-sizing: border-box;
-      position: sticky;
-      top: 0;
-    }
-
-    .sidebar h3 {
-      margin-top: 0;
-    }
-
-    .content {
-      flex: 1;
-      padding: 20px;
-    }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
-    }
-
-    .product-card {
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 8px;
-      background-color: #fff;
-    }
-
-    .product-card h4 {
-      margin: 10px 0 5px;
-    }
-
-    .filter-group {
-      margin-bottom: 20px;
-    }
-
-    .filter-group label {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    input[type="checkbox"],
-    input[type="radio"] {
-      margin-right: 5px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Product Store</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-100">
 
-  <div class="sidebar">
-    <h3>Filters</h3>
-
-    <div class="filter-group">
-      <label>Price Range</label>
-      <input type="radio" name="price" value="0-50" id="price1">
-      <label for="price1">$0 - $50</label><br>
-      <input type="radio" name="price" value="51-100" id="price2">
-      <label for="price2">$51 - $100</label><br>
-      <input type="radio" name="price" value="101-200" id="price3">
-      <label for="price3">$101 - $200</label><br>
-      <input type="radio" name="price" value="all" id="priceAll" checked>
-      <label for="priceAll">All</label>
+  <!-- Header -->
+  <header class="bg-white shadow-md p-4 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center space-x-3">
+      <img src="https://via.placeholder.com/40" alt="Logo" class="w-10 h-10 rounded-full" />
+      <h1 class="text-xl font-bold text-gray-800">MyShop</h1>
     </div>
-
-    <div class="filter-group">
-      <label>Category</label>
-      <input type="checkbox" value="Electronics" id="cat1">
-      <label for="cat1">Electronics</label><br>
-      <input type="checkbox" value="Clothing" id="cat2">
-      <label for="cat2">Clothing</label><br>
-      <input type="checkbox" value="Home" id="cat3">
-      <label for="cat3">Home</label>
+    <div class="w-1/2">
+      <input id="searchInput" type="text" placeholder="Search products or categories..."
+        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
+  </header>
 
-    <div class="filter-group">
-      <label>Availability</label>
-      <input type="checkbox" id="inStockOnly">
-      <label for="inStockOnly">In Stock Only</label>
-    </div>
+  <!-- Main Layout -->
+  <div class="flex">
+    <!-- Sidebar Filters -->
+    <aside class="w-64 p-5 bg-white shadow-md h-screen sticky top-20 overflow-y-auto">
+      <h2 class="text-lg font-semibold mb-4">Filters</h2>
+
+      <!-- Price Filter -->
+      <div class="mb-6">
+        <h3 class="font-medium mb-2">Price Range</h3>
+        <div class="space-y-1">
+          <label><input type="radio" name="price" value="0-50" class="mr-2"> $0 - $50</label><br>
+          <label><input type="radio" name="price" value="51-100" class="mr-2"> $51 - $100</label><br>
+          <label><input type="radio" name="price" value="101-200" class="mr-2"> $101 - $200</label><br>
+          <label><input type="radio" name="price" value="all" checked class="mr-2"> All</label>
+        </div>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="mb-6">
+        <h3 class="font-medium mb-2">Category</h3>
+        <div class="space-y-1">
+          <label><input type="checkbox" value="Electronics" class="categoryFilter mr-2"> Electronics</label><br>
+          <label><input type="checkbox" value="Clothing" class="categoryFilter mr-2"> Clothing</label><br>
+          <label><input type="checkbox" value="Home" class="categoryFilter mr-2"> Home</label>
+        </div>
+      </div>
+
+      <!-- Availability Filter -->
+      <div>
+        <h3 class="font-medium mb-2">Availability</h3>
+        <label><input type="checkbox" id="inStockOnly" class="mr-2"> In Stock Only</label>
+      </div>
+    </aside>
+
+    <!-- Product Grid -->
+    <main class="flex-1 p-6">
+      <h2 class="text-2xl font-bold mb-4">Products</h2>
+      <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <!-- Products will be rendered here -->
+      </div>
+    </main>
   </div>
 
-  <div class="content">
-    <h2>Products</h2>
-    <div class="product-grid" id="productGrid">
-      <!-- Products will be dynamically inserted here -->
-    </div>
-  </div>
-
+  <!-- JavaScript -->
   <script>
     const products = [
       { name: 'Wireless Mouse', price: 25, category: 'Electronics', inStock: true },
@@ -114,47 +76,53 @@
     ];
 
     const productGrid = document.getElementById('productGrid');
-    const checkboxes = document.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+    const priceRadios = document.querySelectorAll('input[name="price"]');
+    const categoryCheckboxes = document.querySelectorAll('.categoryFilter');
+    const inStockCheckbox = document.getElementById('inStockOnly');
+    const searchInput = document.getElementById('searchInput');
 
     function renderProducts(filteredProducts) {
       productGrid.innerHTML = '';
       if (filteredProducts.length === 0) {
-        productGrid.innerHTML = '<p>No products found.</p>';
+        productGrid.innerHTML = '<p class="col-span-full text-gray-500">No products found.</p>';
         return;
       }
       filteredProducts.forEach(p => {
         const card = document.createElement('div');
-        card.className = 'product-card';
+        card.className = 'bg-white p-4 rounded-xl shadow-md';
         card.innerHTML = `
-          <h4>${p.name}</h4>
-          <p>Price: $${p.price}</p>
-          <p>Category: ${p.category}</p>
-          <p>${p.inStock ? 'In Stock' : 'Out of Stock'}</p>
+          <h4 class="font-semibold text-lg">${p.name}</h4>
+          <p class="text-sm text-gray-600 mb-1">Category: ${p.category}</p>
+          <p class="text-blue-600 font-bold mb-1">$${p.price}</p>
+          <p class="text-sm ${p.inStock ? 'text-green-600' : 'text-red-500'}">
+            ${p.inStock ? 'In Stock' : 'Out of Stock'}
+          </p>
         `;
         productGrid.appendChild(card);
       });
     }
 
     function filterProducts() {
-      const selectedPrice = document.querySelector('input[name="price"]:checked')?.value;
-      const selectedCategories = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
-        .map(cb => cb.value);
-      const inStockOnly = document.getElementById('inStockOnly').checked;
+      const selectedPrice = Array.from(priceRadios).find(r => r.checked)?.value;
+      const selectedCategories = Array.from(categoryCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+      const inStockOnly = inStockCheckbox.checked;
+      const searchText = searchInput.value.toLowerCase();
 
       let filtered = products.filter(p => {
         // Price filter
-        if (selectedPrice && selectedPrice !== 'all') {
+        if (selectedPrice !== 'all') {
           const [min, max] = selectedPrice.split('-').map(Number);
           if (p.price < min || p.price > max) return false;
         }
 
         // Category filter
-        if (selectedCategories.length > 0 && !selectedCategories.includes(p.category)) {
-          return false;
-        }
+        if (selectedCategories.length && !selectedCategories.includes(p.category)) return false;
 
         // In stock filter
-        if (inStockOnly && !p.inStock) {
+        if (inStockOnly && !p.inStock) return false;
+
+        // Search filter
+        if (searchText && !p.name.toLowerCase().includes(searchText) && !p.category.toLowerCase().includes(searchText)) {
           return false;
         }
 
@@ -164,7 +132,10 @@
       renderProducts(filtered);
     }
 
-    checkboxes.forEach(cb => cb.addEventListener('change', filterProducts));
+    priceRadios.forEach(r => r.addEventListener('change', filterProducts));
+    categoryCheckboxes.forEach(cb => cb.addEventListener('change', filterProducts));
+    inStockCheckbox.addEventListener('change', filterProducts);
+    searchInput.addEventListener('input', filterProducts);
 
     // Initial render
     renderProducts(products);
